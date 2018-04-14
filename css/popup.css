@@ -1,0 +1,35 @@
+@font-face {
+    font-family: "OpenSans";
+    src: url("../fonts/OpenSans/OpenSans-Regular.ttf");
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "OpenSans";
+    src: url("../fonts/OpenSans/OpenSans-Bold.ttf");
+    font-style: bold;
+    font-weight: 700;
+}
+
+body {
+    width: 400px;
+    height: 400px;
+    font-family: OpenSans, "Helvetica Neue", Arial, sans-serif;
+}
+
+.header-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-wrapper__header-content {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.result {
+    color: blue;
+}
