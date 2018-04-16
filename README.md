@@ -8,6 +8,26 @@
 
 This is a Chrome extension in popup form. Ribbon Reminder was an old app I made in Swift for iOS a while back, and I think its concept could work well for an extension - so I decided to open-source this project so that others can learn.
 
+## Features
+- Chrome popup extension
+- Vue 2.5
+- Async/Await
+- Bootstrap 4
+- SASS
+- Font-Awesome
+- Font support
+- And more...
+
+``` bash
+# install dependencies
+npm install
+
+# serve for development, and also to build (for now)
+npm run watch
+```
+
+## General Information
+
 Originally, I had set up this project without using Vue, but as a huge Vue fan, I quickly missed its templating (among other things of course), so I went ahead and went to work on integrating Vue into the development workflow for a Chrome extension.
 
 Honestly, at first it was tough - because I couldn't just use the Vue-Cli due to the project structure required for Chrome extensions. Well, I'm sure you probably could, but first I wanted to learn how the manifest.js tied into the rest of the app. I got the popup to show and some data to save, but I quickly realized that I would need some type of JavaScript templating system to really be efficient - that's where Vue comes in, as it's already my front-end framework of choice.
