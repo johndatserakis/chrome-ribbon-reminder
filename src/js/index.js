@@ -2,10 +2,7 @@
 require("../manifest.json")
 
 // Program icons
-require("../icons/get_started16.png")
-require("../icons/get_started32.png")
-require("../icons/get_started48.png")
-require("../icons/get_started128.png")
+require("../icons/ribbon.png")
 
 // Fonts
 require("../fonts/OpenSans/OpenSans-Regular.ttf")

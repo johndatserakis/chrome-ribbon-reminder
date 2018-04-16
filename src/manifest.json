@@ -1,7 +1,7 @@
 {
     "name": "Ribbon Reminder",
     "version": "1.0",
-    "description": "A place to store active tasks - and a notification mechanism to make sure you don't forget them.",
+    "description": "Like a ribbon tied around your finger, Ribbon Reminder helps keep your tasks in focus. Ribbon Reminder lets you use a badge counter in your toolbar to keep track of your tasks.",
     "permissions": ["storage", "activeTab"],
     "background": {
         "scripts": [
@@ -14,10 +14,7 @@
         "default_title": "Ribbon Reminder"
     },
     "icons": {
-        "16": "get_started16.png",
-        "32": "get_started32.png",
-        "48": "get_started48.png",
-        "128": "get_started128.png"
+        "128": "ribbon.png"
     },
     "web_accessible_resources": [
     ],

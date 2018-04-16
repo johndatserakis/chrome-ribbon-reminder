@@ -2,39 +2,39 @@
 
 //Primary colors
 $white: #ffffff;
-$off-white: #FFFFF5;
-$black: #444;
-$muted: lighten($black, 10%);
+$off-white: darken($white, 4%);
+$black: #404C47;
+$muted: lighten($black, 25%);
 
 $silver: #B4B4B4;
 
-$light-grey: #F1F1F1;
-$grey: darken($light-grey, 15%);
+$light-grey: #E7E9EC;
+$grey: #B9C4CA;
 $dark-grey: darken($grey, 15%);
 
 //Main
-$blue: #7657F7;
+$blue: #4E5CE9;
 $dark-blue: darken($blue, 15%);
-$light-blue: lighten($blue, 15%);
+$light-blue: lighten($blue, 10%);
 
-$red: #e60000;
-$dark-red: darken($red, 15%);
-$light-red: lighten($red, 15%);
+$red: #F14B4E;
+$dark-red: #9B4244;
+$light-red: #CDABAC;
 
 $yellow: #FFFC49;
 $dark-yellow: darken($yellow, 15%);
 $light-yellow: lighten($yellow, 15%);
 
-$green: #BCFA46;
+$green: #5CED5F;
 $dark-green: darken($green, 15%);
 $light-green: lighten($green, 15%);
 
-$orange: #ff700b;
+$orange: #D56E31;
 $dark-orange: darken($orange, 15%);
 $light-orange: lighten($orange, 15%);
 
-$purple: #B744FB;
-$dark-purple: #841FCE;
+$purple: #AC1E67;
+$dark-purple: darken($purple, 15%);
 $light-purple: lighten($purple, 15%);
 
 //Color specs
@@ -52,7 +52,7 @@ $heavy-box-shadow: 0 3px 6px 0 rgba($black, 0.4);
 $container-box-shadow: 0 2px 3px 0 rgba($black, 0.4);
 
 //Gradient
-$gradient-primary: linear-gradient(180deg, $purple, $dark-purple);
+$gradient-primary: linear-gradient(180deg, $blue, $dark-blue);
 $gradient-alt: linear-gradient(180deg, $orange, $dark-orange);
 $gradient-grey: linear-gradient(180deg, $light-grey, darken($light-grey, 10%));
 
@@ -63,7 +63,7 @@ $theme-colors: (
     success: $green,
     info: $light-blue,
     warning: $yellow,
-    danger: $red,
+    danger: $light-red,
     light: $white,
     dark: $black
 );
