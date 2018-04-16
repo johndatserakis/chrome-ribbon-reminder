@@ -1,0 +1,60 @@
+@font-face {
+    font-family: "OpenSans";
+    src: url("../fonts/OpenSans/OpenSans-Regular.ttf");
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "OpenSans";
+    src: url("../fonts/OpenSans/OpenSans-Bold.ttf");
+    font-style: bold;
+    font-weight: 700;
+}
+
+body {
+    background: $white;
+    width: 400px;
+    min-height: 400px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    border-color: $dark-grey;
+}
+
+// Some button work
+.btn-blue {
+    @include button-variant($blue, $blue, $active-background: darken($blue, 7.5%), $active-border: darken($blue, 10%))
+}
+
+.btn-light-blue {
+    @include button-variant($light-blue, $light-blue, $active-background: darken($light-blue, 7.5%), $active-border: darken($light-blue, 10%))
+}
+
+.btn-green {
+    @include button-variant($green, $green, $active-background: darken($green, 7.5%), $active-border: darken($green, 10%))
+}
+
+.btn-red {
+    @include button-variant($red, $red, $active-background: darken($red, 7.5%), $active-border: darken($red, 10%))
+}
+
+.btn-dark-red {
+    @include button-variant($dark-red, $dark-red, $active-background: darken($dark-red, 7.5%), $active-border: darken($dark-red, 10%))
+}
+
+.btn-orange {
+    @include button-variant($orange, $orange, $active-background: darken($orange, 7.5%), $active-border: darken($orange, 10%))
+}
+
+.btn-yellow {
+    @include button-variant($yellow, $yellow, $active-background: darken($yellow, 7.5%), $active-border: darken($yellow, 10%))
+}
+
+.btn-purple {
+    @include button-variant($purple, $purple, $active-background: darken($purple, 7.5%), $active-border: darken($purple, 10%))
+}
