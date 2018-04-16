@@ -1,20 +1,20 @@
 @font-face {
-    font-family: "OpenSans";
-    src: url("../fonts/OpenSans/OpenSans-Regular.ttf");
+    font-family: "Karla";
+    src: url("../fonts/Karla/Karla-Regular.ttf");
     font-style: normal;
     font-weight: 400;
 }
 
 @font-face {
-    font-family: "OpenSans";
-    src: url("../fonts/OpenSans/OpenSans-Bold.ttf");
+    font-family: "Karla";
+    src: url("../fonts/Karla/Karla-Bold.ttf");
     font-style: bold;
     font-weight: 700;
 }
 
 body {
     background: $white;
-    width: 400px;
+    min-width: 400px;
     min-height: 400px;
 }
 

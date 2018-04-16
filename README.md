@@ -6,7 +6,7 @@
 
 # Chrome-Ribbon-Reminder
 
-This is a Chrome extension in popup form. Ribbon Reminder was an old app I made in Swift for iOS a while back, and I think its concept could work well for an extension - so I decided to open-source this project so that others can learn.
+This is a Chrome extension in popup form. [Ribbon Reminder](https://github.com/johndatserakis/RibbonReminder) was an old app I made in Swift for iOS a while back, and I think its concept could work well for an extension - so I decided to open-source this project so that others can learn.
 
 ## Features
 - Chrome popup extension
@@ -22,8 +22,11 @@ This is a Chrome extension in popup form. Ribbon Reminder was an old app I made 
 # install dependencies
 npm install
 
-# serve for development, and also to build (for now)
+# serve for development (Serve files from /dist folder in development)
 npm run watch
+
+# build for production
+npm run build
 ```
 
 ## General Information
@@ -35,6 +38,8 @@ Honestly, at first it was tough - because I couldn't just use the Vue-Cli due to
 Take a look at the webpack.config.js to get a sense of what Webpack is doing - it's nothing to crazy, just the basic scss handling, vue loading, font/image moving. I use a similar front-end pattern, although really shortened, as [koa-vue-notes-web](https://github.com/johndatserakis/koa-vue-notes-web), so you'll find a few custom styles loaded first and then the component styling after in the main app.js.
 
 All in all the hardest thing to deal with was the async chrome storage calls - the callbacks were pretty viscous and it didn't seem super appealing to be several callbacks deep at all times. What I ended up coming across was [chromeExtensionAsync](https://github.com/KeithHenry/chromeExtensionAsync), which honestly was a life-saver. What it does is turn all (most) of the Chrome async extension API calls into Promises. I was super psyched to see that. So what I did was combine that with the awesome async/await promise method and I was on my way. All I had to do was make sure to keep the data on the Vue instance in tune with the Chrome storage. In the Home.vue component, you'll see a watcher I set up. That's there to keep everything updated in the Chrome storage when there's a change. I found this to be a sick solution to keeping everything in sync.
+
+Next on the list, perhaps for a future project, is to incorporate a background page and content scripts in the workflow.
 
 ## Hit Me Up
 

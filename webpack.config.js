@@ -51,7 +51,8 @@ const config = {
     plugins: [
         new HtmlWebpackPlugin({
             title: "Ribbon Reminder",
-            template: './src/index.html',
+            template: './src/popup.html',
+            filename: 'popup.html'
         })
     ]
 };
