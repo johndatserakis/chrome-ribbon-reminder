@@ -1,0 +1,25 @@
+{
+    "name": "Ribbon Reminder",
+    "version": "1.0",
+    "description": "A place to store active tasks - and a notification mechanism to make sure you don't forget them.",
+    "permissions": ["storage", "activeTab"],
+    "background": {
+        "scripts": [
+            "app.js"
+        ],
+        "persistent": true
+    },
+    "browser_action": {
+        "default_popup": "index.html",
+        "default_title": "Ribbon Reminder"
+    },
+    "icons": {
+        "16": "get_started16.png",
+        "32": "get_started32.png",
+        "48": "get_started48.png",
+        "128": "get_started128.png"
+    },
+    "web_accessible_resources": [
+    ],
+    "manifest_version": 2
+}

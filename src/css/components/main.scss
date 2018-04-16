@@ -15,21 +15,12 @@
 body {
     width: 400px;
     height: 400px;
-    font-family: OpenSans, "Helvetica Neue", Arial, sans-serif;
 }
 
-.header-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.header-wrapper__header-content {
-    font-weight: bold;
-    font-size: 1.2rem;
+.input-group {
     margin-bottom: 20px;
 }
 
-.result {
-    color: blue;
+.form-control {
+    border-color: $dark-grey;
 }
