@@ -1,4 +1,4 @@
-<p align="center"><a href="https://github.com/johndatserakis/chrome-ribbon-reminder" target="_blank"><img width="128" src="./src/icons/ribbon.png"></a></p>
+<p align="center"><a href="https://github.com/johndatserakis/chrome-ribbon-reminder" target="_blank"><img width="128" src="./src/icons/app-icon.png"></a></p>
 
 <p align="center">
   <a href="http://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
