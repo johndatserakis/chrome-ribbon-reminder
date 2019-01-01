@@ -9,7 +9,8 @@
 This is a Chrome extension in popup form. [Ribbon Reminder](https://github.com/johndatserakis/RibbonReminder) was an old app I made in Swift for iOS a while back, and I think its concept could work well for an extension - so I decided to open-source this project so that others can learn.
 
 ## Features
-- Chrome popup extension
+- Browser popup extension
+- Browser background page (setup but not used in this program)
 - Vue 2.5
 - Async/Await
 - Bootstrap 4
@@ -37,9 +38,11 @@ Honestly, at first it was tough - because I couldn't just use the Vue-Cli due to
 
 Take a look at the webpack.config.js to get a sense of what Webpack is doing - it's nothing to crazy, just the basic scss handling, vue loading, font/image moving. I use a similar front-end pattern, although really shortened, as [koa-vue-notes-web](https://github.com/johndatserakis/koa-vue-notes-web), so you'll find a few custom styles loaded first and then the component styling after in the main app.js.
 
-All in all the hardest thing to deal with was the async chrome storage calls - the callbacks were pretty vicious and it didn't seem super appealing to be several callbacks deep at all times. What I ended up coming across was [chromeExtensionAsync](https://github.com/KeithHenry/chromeExtensionAsync), which honestly was a life-saver. What it does is turn all (most) of the Chrome async extension API calls into Promises. I was super psyched to see that. So what I did was combine that with the awesome async/await promise method and I was on my way. All I had to do was make sure to keep the data on the Vue instance in tune with the Chrome storage. In the Home.vue component, you'll see a watcher I set up. That's there to keep everything updated in the Chrome storage when there's a change. I found this to be a sick solution to keeping everything in sync.
+All in all the hardest thing to deal with was the async chrome storage calls - the callbacks were pretty vicious and it didn't seem super appealing to be several callbacks deep at all times. What I ended up coming across was [webextension-polyfill](https://github.com/mozilla/webextension-polyfill), which honestly was a life-saver. What it does is turn all (most) of the Chrome async extension API calls into Promises. I was super psyched to see that. So what I did was combine that with the awesome async/await promise method and I was on my way.
 
-Next on the list, perhaps for a future project, is to incorporate a background page and content scripts in the workflow.
+All I had to do was make sure to keep the data on the Vue instance in tune with the Chrome storage. In the Popup.vue component, you'll see a watcher I set up. That's there to keep everything updated in the Chrome storage when there's a change. I found this to be a slick solution to keeping everything in sync. Just note that with this installed you'll use `browser` instead of `chrome` when referencing the extension API. What's really cool about this is that now your extension should well with Firefox with little further effort.
+
+I have also setup a background page that will let you handle background actions nicely - I don't use it in this extension as everything is handled in the popup - but you can use it however you like.
 
 ## Hit Me Up
 
@@ -47,6 +50,6 @@ Go ahead and fork the project! Message me here if you have questions or submit a
 
 ## License
 
-Copywrite 2018 John Datserakis
+Copyright 2018 John Datserakis
 
 [MIT](http://opensource.org/licenses/MIT)

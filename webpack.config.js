@@ -1,11 +1,15 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const config = {
-    entry: './src/js/index.js',
+    entry: {
+        background: './src/background/background.js',
+        popup: './src/popup/popup.js'
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'app.js'
+        filename: '[name].js'
     },
     module: {
         rules: [
@@ -35,11 +39,7 @@ const config = {
                 use: 'file-loader?name=[name].[ext]'
             },
             {
-                test: /(fontawesome.js)$/,
-                use: 'file-loader?name=[name].[ext]'
-            },
-            {
-                test: /\.scss$/,
+                test: /\.(scss|css)$/,
                 use: [
                     'style-loader',
                     'css-loader',
@@ -51,9 +51,14 @@ const config = {
     plugins: [
         new HtmlWebpackPlugin({
             title: "Ribbon Reminder",
-            template: './src/popup.html',
+            template: './src/popup/popup.html',
             filename: 'popup.html'
-        })
+        }),
+        new CopyWebpackPlugin([
+            { from: './src/manifest.json', to: './manifest.json' },
+            { from: './src/icons/app-icon.png', to: './app-icon.png' },
+            { from: './src/fonts/FontAwesome/fontawesome.js', to: './fontawesome.js' }
+        ])
     ]
 };
 

@@ -1,14 +1,19 @@
 {
     "name": "Ribbon Reminder",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Like a ribbon tied around your finger, Ribbon Reminder helps keep your tasks in focus. Use a badge counter to manage your tasks.",
     "permissions": ["storage", "activeTab"],
     "browser_action": {
         "default_popup": "popup.html",
         "default_title": "Ribbon Reminder"
     },
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
     "icons": {
-        "128": "ribbon.png"
+        "128": "app-icon.png"
     },
     "web_accessible_resources": [
     ],

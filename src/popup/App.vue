@@ -1,8 +1,6 @@
 <template>
     <div>
-
         <popup></popup>
-
     </div>
 </template>
 
@@ -23,5 +21,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import '../../css/components/variables.scss';
+    @import '../css/components/variables.scss';
 </style>

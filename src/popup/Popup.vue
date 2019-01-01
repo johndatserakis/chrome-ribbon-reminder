@@ -110,7 +110,7 @@ export default {
     methods: {
         async getRibbons () {
             try {
-                var result = await chrome.storage.sync.get({ribbons: []})
+                var result = await browser.storage.sync.get({ribbons: []})
                 return result.ribbons
             } catch (error) {
                 console.log(error)
@@ -124,7 +124,7 @@ export default {
             }
 
             try {
-                await chrome.storage.sync.remove('ribbons')
+                await browser.storage.sync.remove('ribbons')
                 this.ribbons = await this.getRibbons()
             } catch (error) {
                 console.log(error)
@@ -171,12 +171,12 @@ export default {
             }
 
             if (!count) {
-                chrome.browserAction.setBadgeText({text: ''})
+                browser.browserAction.setBadgeText({text: ''})
                 return
             }
 
-            chrome.browserAction.setBadgeText({text: String(count)})
-            chrome.browserAction.setBadgeBackgroundColor({color: '#347693'})
+            browser.browserAction.setBadgeText({text: String(count)})
+            browser.browserAction.setBadgeBackgroundColor({color: '#347693'})
         },
         getHumanReadableDate(date) {
             return distanceInWordsToNow(date)
@@ -192,7 +192,7 @@ export default {
             async handler(val) {
                 // Make sure to store the new array of ribbons in sync
                 try {
-                    await chrome.storage.sync.set({'ribbons': val})
+                    await browser.storage.sync.set({'ribbons': val})
                     this.setBadgeText()
                 } catch (error) {
                     console.log(error)
@@ -207,7 +207,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import '../../css/components/variables.scss';
+    @import '../css/components/variables.scss';
 
     .header {
         background-color: $red;
