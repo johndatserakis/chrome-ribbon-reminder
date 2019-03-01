@@ -44,6 +44,8 @@ All I had to do was make sure to keep the data on the Vue instance in tune with 
 
 I have also setup a background page that will let you handle background actions nicely - I don't use it in this extension as everything is handled in the popup - but you can use it however you like.
 
+For Firefox add-ons, install [web-ext](https://github.com/mozilla/web-ext) and run `web-ext build` in the final dist folder. This will produce a zip that will accepted through Firefox. Other than the `applications` property in the manifest.json - there are no other differences. Make sure your application `id` is unique or else it won't be accepted.
+
 ## Hit Me Up
 
 Go ahead and fork the project! Message me here if you have questions or submit an issue if needed. I'll be making touch-ups as time goes on. Have fun with this!
