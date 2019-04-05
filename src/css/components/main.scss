@@ -28,33 +28,38 @@ body {
 
 // Some button work
 .btn-blue {
-    @include button-variant($blue, $blue, $active-background: darken($blue, 7.5%), $active-border: darken($blue, 10%))
+    @include button-variant($blue, $blue, $active-background: darken($blue, 7.5%), $active-border: darken($blue, 10%));
 }
 
 .btn-light-blue {
-    @include button-variant($light-blue, $light-blue, $active-background: darken($light-blue, 7.5%), $active-border: darken($light-blue, 10%))
+    @include button-variant($light-blue, $light-blue, $active-background: darken($light-blue, 7.5%), $active-border: darken($light-blue, 10%));
 }
 
 .btn-green {
-    @include button-variant($green, $green, $active-background: darken($green, 7.5%), $active-border: darken($green, 10%))
+    @include button-variant($green, $green, $active-background: darken($green, 7.5%), $active-border: darken($green, 10%));
+    color: $white;
 }
 
 .btn-red {
-    @include button-variant($red, $red, $active-background: darken($red, 7.5%), $active-border: darken($red, 10%))
+    @include button-variant($red, $red, $active-background: darken($red, 7.5%), $active-border: darken($red, 10%));
 }
 
 .btn-dark-red {
-    @include button-variant($dark-red, $dark-red, $active-background: darken($dark-red, 7.5%), $active-border: darken($dark-red, 10%))
+    @include button-variant($dark-red, $dark-red, $active-background: darken($dark-red, 7.5%), $active-border: darken($dark-red, 10%));
 }
 
 .btn-orange {
-    @include button-variant($orange, $orange, $active-background: darken($orange, 7.5%), $active-border: darken($orange, 10%))
+    @include button-variant($orange, $orange, $active-background: darken($orange, 7.5%), $active-border: darken($orange, 10%));
 }
 
 .btn-yellow {
-    @include button-variant($yellow, $yellow, $active-background: darken($yellow, 7.5%), $active-border: darken($yellow, 10%))
+    @include button-variant($yellow, $yellow, $active-background: darken($yellow, 7.5%), $active-border: darken($yellow, 10%));
 }
 
 .btn-purple {
-    @include button-variant($purple, $purple, $active-background: darken($purple, 7.5%), $active-border: darken($purple, 10%))
+    @include button-variant($purple, $purple, $active-background: darken($purple, 7.5%), $active-border: darken($purple, 10%));
+}
+
+.btn-grey {
+    @include button-variant($light-grey, $light-grey, $active-background: darken($light-grey, 7.5%), $active-border: darken($light-grey, 10%));
 }

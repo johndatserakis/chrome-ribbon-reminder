@@ -36,34 +36,56 @@
         <section class="ribbon-list">
             <div class="container">
                 <div class="row">
-                    <div v-if="ribbons.length" v-for="(ribbon, index) in ribbons" class="col-12">
-
+                    <div v-if="processedRibbons.length" v-for="(ribbon, index) in processedRibbons" class="col-12">
                         <div class="ribbon-list-item">
                             <div class="ribbon-list-item__ribbon-list-text-wrapper">
-                                <div class="ribbon-list-item__ribbon-list-text-wrapper__text">
-                                    {{ribbon.text}}
+                                <div v-if="!ribbon.isEditing" class="ribbon-list-item__ribbon-list-text-wrapper__text" v-html="ribbon.text"></div>
+
+                                <div v-else>
+                                    <textarea v-model="temporaryEditingContent"></textarea>
                                 </div>
+
                                 <div class="ribbon-list-item__ribbon-list-text-wrapper__date">
                                     {{getHumanReadableDate(ribbon.timestamp)}}
                                 </div>
                             </div>
+
                             <div class="ribbon-list-item__ribbon-list-button-wrapper">
-
-                                <button v-if="ribbon.status" @click="toggleStatus(index)" class="btn btn-blue btn-sm ribbon-list-item__ribbon-list-button-wrapper__button">
-                                    <i class="fa fa-eye fa-fw"></i> Untie Ribbon
+                                <!-- Not Editing -->
+                                <button v-if="!ribbon.isEditing && ribbon.status" @click="toggleStatus(index)" class="btn btn-blue btn-sm ribbon-list-item__ribbon-list-button-wrapper__button">
+                                    <i class="fa fa-eye fa-fw"></i> Untie
                                 </button>
 
-                                <button v-if="!ribbon.status" @click="toggleStatus(index)" class="btn btn-light-blue btn-sm ribbon-list-item__ribbon-list-button-wrapper__button">
-                                    <i class="fa fa-eye-slash fa-fw"></i> Tie Ribbon
+                                <button v-if="!ribbon.isEditing && !ribbon.status" @click="toggleStatus(index)" class="btn btn-light-blue btn-sm ribbon-list-item__ribbon-list-button-wrapper__button">
+                                    <i class="fa fa-eye-slash fa-fw"></i> Tie
                                 </button>
 
-                                <button @click="deleteRibbon(index)" class="btn btn-red btn-sm ribbon-list-item__ribbon-list-button-wrapper__button">
+                                <button v-if="!ribbon.isEditing" @click="deleteRibbon(index)" class="btn btn-red btn-sm ribbon-list-item__ribbon-list-button-wrapper__button">
                                     <i class="fa fa-times fa-fw"></i> Delete
                                 </button>
 
+                                <button v-if="!ribbon.isEditing" @click="toggleEditStatus(index)" class="btn btn-grey btn-sm ribbon-list-item__ribbon-list-button-wrapper__button">
+                                    <i class="fa fa-pencil fa-fw"></i> Edit
+                                </button>
+
+                                <button v-if="!ribbon.isEditing" @click="moveRibbon(index, 'up')" class="btn btn-grey btn-sm ribbon-list-item__ribbon-list-button-wrapper__button" :disabled="ribbon.order === 0">
+                                    <i class="fa fa-arrow-up fa-fw"></i>
+                                </button>
+
+                                <button v-if="!ribbon.isEditing" @click="moveRibbon(index, 'down')" class="btn btn-grey btn-sm ribbon-list-item__ribbon-list-button-wrapper__button" :disabled="ribbon.order === ribbons.length - 1">
+                                    <i class="fa fa-arrow-down fa-fw"></i>
+                                </button>
+
+                                <!-- Editing -->
+                                <button v-if="ribbon.isEditing" @click="submitEdit(index)" class="btn btn-grey btn-sm ribbon-list-item__ribbon-list-button-wrapper__button">
+                                    <i class="fa fa-save fa-fw"></i> Save
+                                </button>
+
+                                <button v-if="ribbon.isEditing" @click="cancelEdit(index)" class="btn btn-red btn-sm ribbon-list-item__ribbon-list-button-wrapper__button">
+                                    <i class="fa fa-times fa-fw"></i> Cancel
+                                </button>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="col-12">
@@ -101,11 +123,19 @@ export default {
             newRibbonFormData: {
                 text: '',
                 timestamp: '',
-                status: true
-            }
+                status: true,
+                isEditing: false,
+                order: null
+            },
+            temporaryEditingContent: null,
+            version: null
         }
     },
     computed: {
+        processedRibbons () {
+            this.ribbons.sort((a, b) => a.order - b.order)
+            return this.ribbons
+        }
     },
     methods: {
         async getRibbons () {
@@ -140,6 +170,14 @@ export default {
             // Add timestamp to ribbon
             this.newRibbonFormData.timestamp = Date.now()
 
+            // Set this as the latest ribbon
+            this.newRibbonFormData.order = 0
+
+            // Increase each ribbon's order by 1
+            for (let i = 0; i < this.ribbons.length; i++) {
+                this.ribbons[i].order = this.ribbons[i].order + 1
+            }
+
             // Add new ribbon to
             this.ribbons.unshift(this.newRibbonFormData)
 
@@ -147,7 +185,9 @@ export default {
             this.newRibbonFormData = {
                 text: '',
                 timestamp: '',
-                status: true
+                status: true,
+                isEditing: false,
+                order: null
             }
         },
         async deleteRibbon (index) {
@@ -158,6 +198,8 @@ export default {
             }
 
             this.ribbons.splice(index, 1)
+
+            await this.resetSortOrderOfAllRibbons()
         },
         toggleStatus (index) {
             this.ribbons[index].status = !this.ribbons[index].status
@@ -180,10 +222,110 @@ export default {
         },
         getHumanReadableDate(date) {
             return distanceInWordsToNow(date)
-        }
+        },
+
+        // Editing
+        toggleEditStatus (index) {
+            this.ribbons[index].isEditing = !this.ribbons[index].isEditing
+            this.temporaryEditingContent = this.ribbons[index].text
+        },
+        submitEdit (index) {
+            this.ribbons[index].text = this.temporaryEditingContent
+            this.temporaryEditingContent = null
+            this.ribbons[index].isEditing = false
+        },
+        turnOffAllEditingStatuses () {
+            return new Promise((resolve, reject) => {
+                for (let i = 0; i < this.ribbons.length; i++) {
+                    this.ribbons[i].isEditing = false
+                }
+                resolve()
+            })
+        },
+        cancelEdit (index) {
+            this.temporaryEditingContent = null
+            this.ribbons[index].isEditing = false
+        },
+
+        // Version
+        async getVersion () {
+            try {
+                var result = await browser.storage.sync.get({version: 1})
+                return result.version
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async setVersion (newVersionNumber) {
+            try {
+                await browser.storage.sync.set({version: newVersionNumber})
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async updateFromVersion1 () {
+            return new Promise((resolve, reject) => {
+                for (let i = 0; i < this.ribbons.length; i++) {
+                    this.ribbons[i].isEditing = false
+                    this.ribbons[i].order = i
+                }
+                resolve()
+            })
+        },
+
+        // Move
+        async moveRibbon (index, type) {
+            if (type === 'up') {
+                if (this.ribbons[index].order === 0) {
+                    return
+                } else {
+                    // Move the one we want
+                    this.ribbons[index].order = this.ribbons[index].order - 1
+
+                    // Move the victim of this move
+                    this.ribbons[index - 1].order = this.ribbons[index - 1].order + 1
+                }
+            }
+
+            if (type === 'down') {
+                if (this.ribbons[index].order === this.ribbons.length - 1) {
+                    return
+                } else {
+                    // Move the one we want
+                    this.ribbons[index].order = this.ribbons[index].order + 1
+
+                    // Move the victim of this move
+                    this.ribbons[index + 1].order = this.ribbons[index + 1].order - 1
+                }
+            }
+        },
+        async resetSortOrderOfAllRibbons () {
+            return new Promise((resolve, reject) => {
+                for (let i = 0; i < this.ribbons.length; i++) {
+                    this.ribbons[i].order = i
+                }
+                resolve()
+            })
+        },
     },
     async mounted () {
         this.ribbons = await this.getRibbons()
+        await this.turnOffAllEditingStatuses()
+        this.version = await this.getVersion()
+
+        // Check the version to see if we need to update
+        if (this.version < 2) {
+            // If we're below version 2, then we need to add ordering
+            // and editing to the ribbons because that's new
+            await this.updateFromVersion1()
+
+            // Now let's update the version in the localStorage
+            await this.setVersion(2)
+
+            // Ok so from now on the updating process is all set and the
+            // user data is all good. Next time they open the popup they'll
+            // gave the latest version.
+        }
     },
     created () {
     },
@@ -228,20 +370,29 @@ export default {
     .enter-form {
         padding: 5px 0 12px;
         background-color: $red;
-        margin-bottom: 25px;
+
+        textarea {
+            width: 100%;
+            min-height: 75px;
+        }
     }
 
     .ribbon-list {
-        padding: 10px 0;
+        padding: 20px 0;
+
+        textarea {
+            width: 100%;
+            min-height: 75px;
+        }
     }
 
     .ribbon-list-item {
-        border: 1px solid darken($off-white, 8%);
+        border: 1px solid darken($off-white, 4%);
         background: $off-white;
         margin-bottom: 20px;
         padding: 10px;
         border-radius: 6px;
-        box-shadow: $light-box-shadow;
+        box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
 
         &__ribbon-list-text-wrapper {
             display: flex;
@@ -251,6 +402,7 @@ export default {
             &__text {
                 margin-bottom: 3px;
                 font-size: 1.2rem;
+                white-space: pre;
             }
 
             &__date {
@@ -262,10 +414,12 @@ export default {
         &__ribbon-list-button-wrapper {
             display: flex;
             flex-direction: row;
-            justify-content: space-between;
+            justify-content: flex-start;
 
             &__button{
-                width: 48%;
+                &:not(:last-child) {
+                    margin-right: 5px;
+                }
             }
         }
     }
