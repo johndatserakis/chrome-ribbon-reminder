@@ -402,7 +402,9 @@ export default {
             &__text {
                 margin-bottom: 3px;
                 font-size: 1.2rem;
-                white-space: pre;
+                white-space: pre-wrap;
+                overflow: scroll;
+                word-break: break-all;
             }
 
             &__date {
