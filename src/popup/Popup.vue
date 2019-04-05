@@ -19,7 +19,7 @@
 
                     <div class="col-9">
                         <div class="form-group">
-                            <textarea v-model="newRibbonFormData.text" class="form-control" placeholder="Ribbon Text"></textarea>
+                            <textarea v-model="newRibbonFormData.text" class="form-control" placeholder="Ribbon Text" autofocus></textarea>
                         </div>
                     </div>
 
@@ -272,6 +272,26 @@ export default {
                 resolve()
             })
         },
+        async updateFromVersion2 () {
+            await this.resetSortOrderOfAllRibbons()
+        },
+        async handleVersionWork (currentVersion) {
+            // Check for version 1
+            if (this.version === null || this.version === 1) {
+                // If we're below version 2, then we need to add ordering
+                // and editing to the ribbons because that's new
+                await this.updateFromVersion1()
+                await this.updateFromVersion2()
+            }
+
+            // Check for version 2
+            if (this.version === 2) {
+                await this.updateFromVersion2()
+            }
+
+            // No matter what, we want to set the latest version here
+            await this.setVersion(currentVersion)
+        },
 
         // Move
         async moveRibbon (index, type) {
@@ -312,20 +332,7 @@ export default {
         this.ribbons = await this.getRibbons()
         await this.turnOffAllEditingStatuses()
         this.version = await this.getVersion()
-
-        // Check the version to see if we need to update
-        if (this.version < 2) {
-            // If we're below version 2, then we need to add ordering
-            // and editing to the ribbons because that's new
-            await this.updateFromVersion1()
-
-            // Now let's update the version in the localStorage
-            await this.setVersion(2)
-
-            // Ok so from now on the updating process is all set and the
-            // user data is all good. Next time they open the popup they'll
-            // gave the latest version.
-        }
+        this.handleVersionWork(3) // Set current version here
     },
     created () {
     },

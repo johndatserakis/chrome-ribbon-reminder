@@ -10805,6 +10805,26 @@ exports.default = {
                 resolve();
             });
         },
+        updateFromVersion2: async function updateFromVersion2() {
+            await this.resetSortOrderOfAllRibbons();
+        },
+        handleVersionWork: async function handleVersionWork(currentVersion) {
+            // Check for version 1
+            if (this.version === null || this.version === 1) {
+                // If we're below version 2, then we need to add ordering
+                // and editing to the ribbons because that's new
+                await this.updateFromVersion1();
+                await this.updateFromVersion2();
+            }
+
+            // Check for version 2
+            if (this.version === 2) {
+                await this.updateFromVersion2();
+            }
+
+            // No matter what, we want to set the latest version here
+            await this.setVersion(currentVersion);
+        },
 
 
         // Move
@@ -10848,20 +10868,7 @@ exports.default = {
         this.ribbons = await this.getRibbons();
         await this.turnOffAllEditingStatuses();
         this.version = await this.getVersion();
-
-        // Check the version to see if we need to update
-        if (this.version < 2) {
-            // If we're below version 2, then we need to add ordering
-            // and editing to the ribbons because that's new
-            await this.updateFromVersion1();
-
-            // Now let's update the version in the localStorage
-            await this.setVersion(2);
-
-            // Ok so from now on the updating process is all set and the
-            // user data is all good. Next time they open the popup they'll
-            // gave the latest version.
-        }
+        this.handleVersionWork(3); // Set current version here
     },
     created: function created() {},
 
@@ -12612,7 +12619,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "form-control",
     attrs: {
-      "placeholder": "Ribbon Text"
+      "placeholder": "Ribbon Text",
+      "autofocus": ""
     },
     domProps: {
       "value": (_vm.newRibbonFormData.text)
