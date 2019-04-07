@@ -35,7 +35,7 @@ const config = {
                 use: 'file-loader?name=[name].[ext]'
             },
             {
-                test: /\.(json|ttf|otf)$/,
+                test: /\.(json|ttf|otf|woff2|woff|eot)$/,
                 use: 'file-loader?name=[name].[ext]'
             },
             {
@@ -56,8 +56,7 @@ const config = {
         }),
         new CopyWebpackPlugin([
             { from: './src/manifest.json', to: './manifest.json' },
-            { from: './src/icons/app-icon.png', to: './app-icon.png' },
-            { from: './src/fonts/FontAwesome/fontawesome.js', to: './fontawesome.js' }
+            { from: './src/icons/app-icon.png', to: './app-icon.png' }
         ])
     ]
 };
