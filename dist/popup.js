@@ -10652,7 +10652,7 @@ exports.default = {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _distance_in_words_to_now = __webpack_require__(30);
@@ -10662,255 +10662,184 @@ var _distance_in_words_to_now2 = _interopRequireDefault(_distance_in_words_to_no
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-    name: 'popup',
-    data: function data() {
-        return {
-            ribbons: [],
-            newRibbonFormData: {
-                text: '',
-                timestamp: '',
-                status: true,
-                isEditing: false,
-                order: null
-            },
-            temporaryEditingContent: null,
-            version: null
-        };
+  name: "popup",
+  data: function data() {
+    return {
+      ribbons: [],
+      newRibbonFormData: {
+        text: "",
+        timestamp: "",
+        status: true,
+        isEditing: false
+      },
+      temporaryEditingContent: null
+    };
+  },
+
+  computed: {
+    processedRibbons: function processedRibbons() {
+      return this.ribbons;
+    }
+  },
+  methods: {
+    getRibbons: async function getRibbons() {
+      try {
+        var result = await browser.storage.sync.get({ ribbons: [] });
+        return result.ribbons;
+      } catch (error) {
+        console.log(error);
+      }
     },
+    deleteAllRibbons: async function deleteAllRibbons() {
+      try {
+        await this.$dialog.confirm("Are you sure you want to delete all your Ribbons?");
+      } catch (error) {
+        return;
+      }
 
-    computed: {
-        processedRibbons: function processedRibbons() {
-            this.ribbons.sort(function (a, b) {
-                return a.order - b.order;
-            });
-            return this.ribbons;
-        }
-    },
-    methods: {
-        getRibbons: async function getRibbons() {
-            try {
-                var result = await browser.storage.sync.get({ ribbons: [] });
-                return result.ribbons;
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        deleteAllRibbons: async function deleteAllRibbons() {
-            try {
-                await this.$dialog.confirm('Are you sure you want to delete all your Ribbons?');
-            } catch (error) {
-                return;
-            }
-
-            try {
-                await browser.storage.sync.remove('ribbons');
-                this.ribbons = await this.getRibbons();
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        saveRibbon: async function saveRibbon() {
-            // Make sure they have some text set
-            if (!this.newRibbonFormData.text) {
-                this.$dialog.alert('Ribbon text is required.');
-                return;
-            }
-
-            // Add timestamp to ribbon
-            this.newRibbonFormData.timestamp = Date.now();
-
-            // Set this as the latest ribbon
-            this.newRibbonFormData.order = 0;
-
-            // Increase each ribbon's order by 1
-            for (var i = 0; i < this.ribbons.length; i++) {
-                this.ribbons[i].order = this.ribbons[i].order + 1;
-            }
-
-            // Add new ribbon to
-            this.ribbons.unshift(this.newRibbonFormData);
-
-            // Reset form data
-            this.newRibbonFormData = {
-                text: '',
-                timestamp: '',
-                status: true,
-                isEditing: false,
-                order: null
-            };
-        },
-        deleteRibbon: async function deleteRibbon(index) {
-            try {
-                await this.$dialog.confirm('Are you sure you want to delete this Ribbon?');
-            } catch (error) {
-                return;
-            }
-
-            this.ribbons.splice(index, 1);
-
-            await this.resetSortOrderOfAllRibbons();
-        },
-        toggleStatus: function toggleStatus(index) {
-            this.ribbons[index].status = !this.ribbons[index].status;
-        },
-        setBadgeText: function setBadgeText() {
-            var count = 0;
-            for (var x = 0; x < this.ribbons.length; x++) {
-                if (this.ribbons[x].status) {
-                    count++;
-                }
-            }
-
-            if (!count) {
-                browser.browserAction.setBadgeText({ text: '' });
-                return;
-            }
-
-            browser.browserAction.setBadgeText({ text: String(count) });
-            browser.browserAction.setBadgeBackgroundColor({ color: '#347693' });
-        },
-        getHumanReadableDate: function getHumanReadableDate(date) {
-            return (0, _distance_in_words_to_now2.default)(date);
-        },
-
-
-        // Editing
-        toggleEditStatus: function toggleEditStatus(index) {
-            this.ribbons[index].isEditing = !this.ribbons[index].isEditing;
-            this.temporaryEditingContent = this.ribbons[index].text;
-        },
-        submitEdit: function submitEdit(index) {
-            this.ribbons[index].text = this.temporaryEditingContent;
-            this.temporaryEditingContent = null;
-            this.ribbons[index].isEditing = false;
-        },
-        turnOffAllEditingStatuses: function turnOffAllEditingStatuses() {
-            var _this = this;
-
-            return new Promise(function (resolve, reject) {
-                for (var i = 0; i < _this.ribbons.length; i++) {
-                    _this.ribbons[i].isEditing = false;
-                }
-                resolve();
-            });
-        },
-        cancelEdit: function cancelEdit(index) {
-            this.temporaryEditingContent = null;
-            this.ribbons[index].isEditing = false;
-        },
-
-
-        // Version
-        getVersion: async function getVersion() {
-            try {
-                var result = await browser.storage.sync.get({ version: 1 });
-                return result.version;
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        setVersion: async function setVersion(newVersionNumber) {
-            try {
-                await browser.storage.sync.set({ version: newVersionNumber });
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        updateFromVersion1: async function updateFromVersion1() {
-            var _this2 = this;
-
-            return new Promise(function (resolve, reject) {
-                for (var i = 0; i < _this2.ribbons.length; i++) {
-                    _this2.ribbons[i].isEditing = false;
-                    _this2.ribbons[i].order = i;
-                }
-                resolve();
-            });
-        },
-        updateFromVersion2: async function updateFromVersion2() {
-            await this.resetSortOrderOfAllRibbons();
-        },
-        handleVersionWork: async function handleVersionWork(currentVersion) {
-            // Check for version 1
-            if (this.version === null || this.version === 1) {
-                // If we're below version 2, then we need to add ordering
-                // and editing to the ribbons because that's new
-                await this.updateFromVersion1();
-                await this.updateFromVersion2();
-            }
-
-            // Check for version 2
-            if (this.version === 2) {
-                await this.updateFromVersion2();
-            }
-
-            // No matter what, we want to set the latest version here
-            await this.setVersion(currentVersion);
-        },
-
-
-        // Move
-        moveRibbon: async function moveRibbon(index, type) {
-            if (type === 'up') {
-                if (this.ribbons[index].order === 0) {
-                    return;
-                } else {
-                    // Move the one we want
-                    this.ribbons[index].order = this.ribbons[index].order - 1;
-
-                    // Move the victim of this move
-                    this.ribbons[index - 1].order = this.ribbons[index - 1].order + 1;
-                }
-            }
-
-            if (type === 'down') {
-                if (this.ribbons[index].order === this.ribbons.length - 1) {
-                    return;
-                } else {
-                    // Move the one we want
-                    this.ribbons[index].order = this.ribbons[index].order + 1;
-
-                    // Move the victim of this move
-                    this.ribbons[index + 1].order = this.ribbons[index + 1].order - 1;
-                }
-            }
-        },
-        resetSortOrderOfAllRibbons: async function resetSortOrderOfAllRibbons() {
-            var _this3 = this;
-
-            return new Promise(function (resolve, reject) {
-                for (var i = 0; i < _this3.ribbons.length; i++) {
-                    _this3.ribbons[i].order = i;
-                }
-                resolve();
-            });
-        }
-    },
-    mounted: async function mounted() {
+      try {
+        await browser.storage.sync.remove("ribbons");
         this.ribbons = await this.getRibbons();
-        await this.turnOffAllEditingStatuses();
-        this.version = await this.getVersion();
-        this.handleVersionWork(3); // Set current version here
+      } catch (error) {
+        console.log(error);
+      }
     },
-    created: function created() {},
+    saveRibbon: async function saveRibbon() {
+      // Make sure they have some text set
+      if (!this.newRibbonFormData.text) {
+        this.$dialog.alert("Ribbon text is required.");
+        return;
+      }
 
-    watch: {
-        ribbons: {
-            handler: async function handler(val) {
-                // Make sure to store the new array of ribbons in sync
-                try {
-                    await browser.storage.sync.set({ 'ribbons': val });
-                    this.setBadgeText();
-                } catch (error) {
-                    console.log(error);
-                }
-            },
+      // Add timestamp to ribbon
+      this.newRibbonFormData.timestamp = Date.now();
 
-            deep: true
+      // Add new ribbon to
+      this.ribbons.unshift(this.newRibbonFormData);
+
+      // Reset form data
+      this.newRibbonFormData = {
+        text: "",
+        timestamp: "",
+        status: true,
+        isEditing: false
+      };
+    },
+    deleteRibbon: async function deleteRibbon(index) {
+      try {
+        await this.$dialog.confirm("Are you sure you want to delete this Ribbon?");
+      } catch (error) {
+        return;
+      }
+
+      this.ribbons.splice(index, 1);
+    },
+    toggleStatus: function toggleStatus(index) {
+      this.ribbons[index].status = !this.ribbons[index].status;
+    },
+    setBadgeText: function setBadgeText() {
+      var count = 0;
+      for (var x = 0; x < this.ribbons.length; x++) {
+        if (this.ribbons[x].status) {
+          count++;
         }
+      }
+
+      if (!count) {
+        browser.browserAction.setBadgeText({ text: "" });
+        return;
+      }
+
+      browser.browserAction.setBadgeText({ text: String(count) });
+      browser.browserAction.setBadgeBackgroundColor({ color: "#347693" });
     },
-    validations: {}
+    getHumanReadableDate: function getHumanReadableDate(date) {
+      return (0, _distance_in_words_to_now2.default)(date);
+    },
+
+
+    // Editing
+    toggleEditStatus: function toggleEditStatus(index) {
+      this.ribbons[index].isEditing = !this.ribbons[index].isEditing;
+      this.temporaryEditingContent = this.ribbons[index].text;
+    },
+    submitEdit: function submitEdit(index) {
+      this.ribbons[index].text = this.temporaryEditingContent;
+      this.temporaryEditingContent = null;
+      this.ribbons[index].isEditing = false;
+    },
+    turnOffAllEditingStatuses: function turnOffAllEditingStatuses() {
+      var _this = this;
+
+      return new Promise(function (resolve, reject) {
+        for (var i = 0; i < _this.ribbons.length; i++) {
+          _this.ribbons[i].isEditing = false;
+        }
+        resolve();
+      });
+    },
+    cancelEdit: function cancelEdit(index) {
+      this.temporaryEditingContent = null;
+      this.ribbons[index].isEditing = false;
+    }
+  },
+  mounted: async function mounted() {
+    this.ribbons = await this.getRibbons();
+    await this.turnOffAllEditingStatuses();
+  },
+  created: function created() {},
+
+  watch: {
+    ribbons: {
+      handler: async function handler(val) {
+        // Make sure to store the new array of ribbons in sync
+        try {
+          await browser.storage.sync.set({ ribbons: val });
+          this.setBadgeText();
+        } catch (error) {
+          console.log(error);
+        }
+      },
+
+      deep: true
+    }
+  },
+  validations: {}
 }; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -12694,7 +12623,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('i', {
     staticClass: "fa fa-plus fa-fw"
-  }), _vm._v(" Add\n                    ")])])])])]), _vm._v(" "), _c('section', {
+  }), _vm._v(" Add\n          ")])])])])]), _vm._v(" "), _c('section', {
     staticClass: "ribbon-list"
   }, [_c('div', {
     staticClass: "container"
@@ -12702,6 +12631,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row"
   }, [_vm._l((_vm.processedRibbons), function(ribbon, index) {
     return (_vm.processedRibbons.length) ? _c('div', {
+      key: index,
       staticClass: "col-12"
     }, [_c('div', {
       staticClass: "ribbon-list-item"
@@ -12730,7 +12660,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     })]), _vm._v(" "), _c('div', {
       staticClass: "ribbon-list-item__ribbon-list-text-wrapper__date"
-    }, [_vm._v("\n                                " + _vm._s(_vm.getHumanReadableDate(ribbon.timestamp)) + "\n                            ")])]), _vm._v(" "), _c('div', {
+    }, [_vm._v("\n                " + _vm._s(_vm.getHumanReadableDate(ribbon.timestamp)) + "\n              ")])]), _vm._v(" "), _c('div', {
       staticClass: "ribbon-list-item__ribbon-list-button-wrapper"
     }, [(!ribbon.isEditing && ribbon.status) ? _c('button', {
       staticClass: "btn btn-blue btn-sm ribbon-list-item__ribbon-list-button-wrapper__button",
@@ -12741,7 +12671,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-eye fa-fw"
-    }), _vm._v(" Untie\n                            ")]) : _vm._e(), _vm._v(" "), (!ribbon.isEditing && !ribbon.status) ? _c('button', {
+    }), _vm._v(" Untie\n              ")]) : _vm._e(), _vm._v(" "), (!ribbon.isEditing && !ribbon.status) ? _c('button', {
       staticClass: "btn btn-light-blue btn-sm ribbon-list-item__ribbon-list-button-wrapper__button",
       on: {
         "click": function($event) {
@@ -12750,7 +12680,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-eye-slash fa-fw"
-    }), _vm._v(" Tie\n                            ")]) : _vm._e(), _vm._v(" "), (!ribbon.isEditing) ? _c('button', {
+    }), _vm._v(" Tie\n              ")]) : _vm._e(), _vm._v(" "), (!ribbon.isEditing) ? _c('button', {
       staticClass: "btn btn-red btn-sm ribbon-list-item__ribbon-list-button-wrapper__button",
       on: {
         "click": function($event) {
@@ -12759,7 +12689,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-times fa-fw"
-    }), _vm._v(" Delete\n                            ")]) : _vm._e(), _vm._v(" "), (!ribbon.isEditing) ? _c('button', {
+    }), _vm._v(" Delete\n              ")]) : _vm._e(), _vm._v(" "), (!ribbon.isEditing) ? _c('button', {
       staticClass: "btn btn-grey btn-sm ribbon-list-item__ribbon-list-button-wrapper__button",
       on: {
         "click": function($event) {
@@ -12768,31 +12698,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-pencil fa-fw"
-    }), _vm._v(" Edit\n                            ")]) : _vm._e(), _vm._v(" "), (!ribbon.isEditing) ? _c('button', {
-      staticClass: "btn btn-grey btn-sm ribbon-list-item__ribbon-list-button-wrapper__button",
-      attrs: {
-        "disabled": ribbon.order === 0
-      },
-      on: {
-        "click": function($event) {
-          _vm.moveRibbon(index, 'up')
-        }
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-arrow-up fa-fw"
-    })]) : _vm._e(), _vm._v(" "), (!ribbon.isEditing) ? _c('button', {
-      staticClass: "btn btn-grey btn-sm ribbon-list-item__ribbon-list-button-wrapper__button",
-      attrs: {
-        "disabled": ribbon.order === _vm.ribbons.length - 1
-      },
-      on: {
-        "click": function($event) {
-          _vm.moveRibbon(index, 'down')
-        }
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-arrow-down fa-fw"
-    })]) : _vm._e(), _vm._v(" "), (ribbon.isEditing) ? _c('button', {
+    }), _vm._v(" Edit\n              ")]) : _vm._e(), _vm._v(" "), (ribbon.isEditing) ? _c('button', {
       staticClass: "btn btn-grey btn-sm ribbon-list-item__ribbon-list-button-wrapper__button",
       on: {
         "click": function($event) {
@@ -12801,7 +12707,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-save fa-fw"
-    }), _vm._v(" Save\n                            ")]) : _vm._e(), _vm._v(" "), (ribbon.isEditing) ? _c('button', {
+    }), _vm._v(" Save\n              ")]) : _vm._e(), _vm._v(" "), (ribbon.isEditing) ? _c('button', {
       staticClass: "btn btn-red btn-sm ribbon-list-item__ribbon-list-button-wrapper__button",
       on: {
         "click": function($event) {
@@ -12810,14 +12716,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-times fa-fw"
-    }), _vm._v(" Cancel\n                            ")]) : _vm._e()])])]) : _vm._e()
+    }), _vm._v(" Cancel\n              ")]) : _vm._e()])])]) : _vm._e()
   }), _vm._v(" "), _c('div', {
     staticClass: "col-12"
   }, [(!_vm.ribbons.length) ? _c('div', {
     staticClass: "text-muted"
   }, [_c('i', {
     staticClass: "fa fa-smile-o fa-fw"
-  }), _vm._v(" Use the form above to add a ribbon.\n                    ")]) : _vm._e()])], 2)])]), _vm._v(" "), (_vm.ribbons.length) ? _c('section', {
+  }), _vm._v(" Use the form above to add a\n            ribbon.\n          ")]) : _vm._e()])], 2)])]), _vm._v(" "), (_vm.ribbons.length) ? _c('section', {
     staticClass: "delete-all"
   }, [_c('div', {
     staticClass: "container"
@@ -12832,7 +12738,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('i', {
     staticClass: "fa fa-trash fa-fw"
-  }), _vm._v(" Delete All Ribbons\n                    ")])])])])]) : _vm._e()])
+  }), _vm._v(" Delete All Ribbons\n          ")])])])])]) : _vm._e()])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('section', {
     staticClass: "header"
