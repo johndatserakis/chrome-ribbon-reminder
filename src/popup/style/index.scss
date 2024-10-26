@@ -1,0 +1,60 @@
+html,
+*,
+*:before,
+*:after,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// Mui uses rem for its font-sizes, so setting the root size here updates everything else.
+// https://mui.com/material-ui/customization/typography/
+html {
+  font-size: 16px;
+}
+
+html,
+body {
+  height: 400px;
+  overflow: auto;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  width: 375px;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+strong {
+  display: inline;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+}
