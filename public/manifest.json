@@ -29,5 +29,5 @@
   "manifest_version": 3,
   "name": "Ribbon Reminder",
   "permissions": ["activeTab", "scripting", "storage", "tabs"],
-  "version": "2.0.4"
+  "version": "2.0.0"
 }

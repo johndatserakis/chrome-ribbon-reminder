@@ -4,6 +4,7 @@ import { useStorage } from '../hooks/useStorage';
 import { BACKGROUND_COLOR } from '../style/colors';
 import { theme } from '../style/theme';
 
+import { AddRibbon } from './AddRibon';
 import { Footer } from './Footer';
 import { NavBar } from './NavBar';
 import { RibbonList } from './RibbonList/RibbonList';
@@ -23,6 +24,7 @@ export const Popup = () => {
   return (
     <AppContainer>
       <NavBar />
+      <AddRibbon ribbons={ribbons} setRibbons={setRibbons} />
       <RibbonList ribbons={ribbons} setRibbons={setRibbons} />
       <Footer />
     </AppContainer>

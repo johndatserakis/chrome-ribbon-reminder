@@ -1,12 +1,13 @@
 import { Dispatch, SetStateAction } from 'react';
-import { Delete, DoNotDisturb, Save } from '@mui/icons-material';
+import { Bookmark, Delete, DoNotDisturb, Save } from '@mui/icons-material';
 import { Button, ButtonGroup, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
+import { updateObjectInArray } from '../../utils/array';
 import { STORAGE_KEY_RIBBONS } from '../../utils/storage';
 import { Ribbon, Ribbons } from '../../utils/types';
-import { FlexColumn } from '../Display';
+import { FlexColumn, FlexRow } from '../Display';
 
 import { RibbonFormData } from './RibbonList';
 
@@ -22,7 +23,6 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
     defaultValues,
   });
   const titleLiveValue = watch('title');
-  const storageKey = STORAGE_KEY_RIBBONS;
 
   const onSubmit = async (data: RibbonFormData) => {
     if (!data.title) {
@@ -31,27 +31,17 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
     }
 
     try {
-      const matchedRibbon = ribbons.findIndex(
-        (ribbonFromExisting) => ribbonFromExisting.id === ribbon.id,
+      const newRibbon = { ...ribbon, title: data.title };
+      const updatedRibbons = updateObjectInArray(
+        ribbons,
+        newRibbon,
+        (ribbonFromArray) => ribbonFromArray.id === ribbon.id,
       );
 
-      if (matchedRibbon === -1) {
-        toast.error(
-          'There was an error updating the ribbon. Pleast try again.',
-        );
-        return;
-      }
-
-      const clonedRibbons = [...ribbons];
-
-      clonedRibbons.splice(matchedRibbon, 1, ribbon);
-
-      await chrome.storage.sync.set({ [storageKey]: clonedRibbons });
-
-      setRibbons(clonedRibbons);
-      toast.success(`Ribbon updated.`, { duration: 1000 });
+      await chrome.storage.sync.set({ [STORAGE_KEY_RIBBONS]: updatedRibbons });
+      setRibbons(updatedRibbons);
     } catch (error) {
-      console.log('error', error);
+      console.error('error', error);
     }
   };
 
@@ -60,8 +50,7 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
       (ribbonFromExisting) => ribbonFromExisting.id !== ribbon.id,
     );
 
-    await chrome.storage.sync.set({ [storageKey]: newItems });
-
+    await chrome.storage.sync.set({ [STORAGE_KEY_RIBBONS]: newItems });
     setRibbons(newItems);
   };
 
@@ -69,20 +58,47 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
     reset(defaultValues);
   };
 
+  const onTieToggle = async () => {
+    try {
+      const newRibbon = { ...ribbon, isTied: !ribbon.isTied };
+      const updatedRibbons = updateObjectInArray(
+        ribbons,
+        newRibbon,
+        (ribbonFromArray) => ribbonFromArray.id === ribbon.id,
+      );
+
+      await chrome.storage.sync.set({ [STORAGE_KEY_RIBBONS]: updatedRibbons });
+      setRibbons(updatedRibbons);
+    } catch (error) {
+      console.error('error', error);
+    }
+  };
+
   const isDisabled = !titleLiveValue || titleLiveValue === ribbon.title;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <FlexColumn gap={2}>
-        <TextField
-          {...register('title')}
-          fullWidth
-          label="Task or thought..."
-          multiline
-          placeholder="Send Andy that email before noon."
-          value={titleLiveValue}
-        />
-        <ButtonGroup>
+      <FlexColumn gap={4}>
+        <FlexRow alignItems="center" gap={4}>
+          <TextField
+            {...register('title')}
+            fullWidth
+            label="Task"
+            multiline
+            placeholder="Send Andy that email before noon."
+            value={titleLiveValue}
+          />
+          <Button
+            color={ribbon.isTied ? 'primary' : 'primary'}
+            onClick={onTieToggle}
+            startIcon={ribbon.isTied ? <>🎗️</> : null}
+            type="button"
+            variant={ribbon.isTied ? 'contained' : 'outlined'}
+          >
+            {ribbon.isTied ? 'Untie' : 'Tie'}
+          </Button>
+        </FlexRow>
+        <ButtonGroup size="small">
           <Button
             color="success"
             disabled={isDisabled}
