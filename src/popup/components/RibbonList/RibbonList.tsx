@@ -18,17 +18,19 @@ interface Props {
 export const RibbonList = ({ setRibbons, ribbons }: Props) => {
   const sortedRibbons = [...ribbons].sort((a, b) => a.order - b.order);
 
+  console.log('sortedRibbons', sortedRibbons);
+
   return (
     <>
       {sortedRibbons.length ? (
         <FlexColumn gap={4}>
-          {ribbons.map((ribbon) => (
+          {sortedRibbons.map((ribbon) => (
             <ContentContainer key={ribbon.id}>
               <Card variant="outlined">
                 <CardContent>
                   <RibbonListItem
                     ribbon={ribbon}
-                    ribbons={ribbons}
+                    ribbons={sortedRibbons}
                     setRibbons={setRibbons}
                   />
                 </CardContent>

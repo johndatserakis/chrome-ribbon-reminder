@@ -1,5 +1,11 @@
 import { Dispatch, SetStateAction } from 'react';
-import { Bookmark, Delete, DoNotDisturb, Save } from '@mui/icons-material';
+import {
+  ArrowDownward,
+  ArrowUpward,
+  Delete,
+  DoNotDisturb,
+  Save,
+} from '@mui/icons-material';
 import { Button, ButtonGroup, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -10,6 +16,34 @@ import { Ribbon, Ribbons } from '../../utils/types';
 import { FlexColumn, FlexRow } from '../Display';
 
 import { RibbonFormData } from './RibbonList';
+
+const moveItemInOrder = (
+  items: Ribbons,
+  id: string,
+  direction: 'up' | 'down',
+): Ribbons => {
+  // Clone and sort items by current order to avoid side effects
+  const sortedItems = [...items].sort((a, b) => a.order - b.order);
+
+  // Find the current index of the item to move
+  const currentIndex = sortedItems.findIndex((item) => item.id === id);
+  if (currentIndex === -1) return items; // Return original array if item is not found
+
+  // Calculate the new index based on the direction
+  const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+  // Ensure the new index is within array bounds
+  if (newIndex < 0 || newIndex >= sortedItems.length) return items;
+
+  // Swap items in the sorted array
+  [sortedItems[currentIndex], sortedItems[newIndex]] = [
+    sortedItems[newIndex],
+    sortedItems[currentIndex],
+  ];
+
+  // Reassign order properties to ensure they are sequential
+  return sortedItems.map((item, index) => ({ ...item, order: index }));
+};
 
 interface Props {
   setRibbons: Dispatch<SetStateAction<Ribbons>>;
@@ -74,7 +108,30 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
     }
   };
 
-  const isDisabled = !titleLiveValue || titleLiveValue === ribbon.title;
+  const onSortUp = async () => {
+    try {
+      const updatedRibbons = moveItemInOrder(ribbons, ribbon.id, 'up');
+
+      await chrome.storage.sync.set({ [STORAGE_KEY_RIBBONS]: updatedRibbons });
+      setRibbons(updatedRibbons);
+    } catch (error) {
+      console.error('error', error);
+    }
+  };
+
+  const onSortDown = async () => {
+    try {
+      const updatedRibbons = moveItemInOrder(ribbons, ribbon.id, 'down');
+
+      await chrome.storage.sync.set({ [STORAGE_KEY_RIBBONS]: updatedRibbons });
+      setRibbons(updatedRibbons);
+    } catch (error) {
+      console.error('error', error);
+    }
+  };
+
+  const areSaveButtonsDisabled =
+    !titleLiveValue || titleLiveValue === ribbon.title;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -98,10 +155,17 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
             {ribbon.isTied ? 'Untie' : 'Tie'}
           </Button>
         </FlexRow>
-        <ButtonGroup size="small">
+        <ButtonGroup
+          size="small"
+          sx={{
+            '& .MuiButtonGroup-grouped': {
+              minWidth: 22,
+            },
+          }}
+        >
           <Button
             color="success"
-            disabled={isDisabled}
+            disabled={areSaveButtonsDisabled}
             fullWidth
             size="small"
             startIcon={<Save />}
@@ -112,7 +176,7 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
           </Button>
           <Button
             color="secondary"
-            disabled={isDisabled}
+            disabled={areSaveButtonsDisabled}
             fullWidth
             onClick={onCancel}
             size="small"
@@ -132,6 +196,28 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
             variant="outlined"
           >
             Delete
+          </Button>
+          <Button
+            disabled={ribbon.order === 0}
+            fullWidth
+            onClick={onSortUp}
+            size="small"
+            sx={{ maxWidth: '30px', minWidth: '30px', padding: 0 }}
+            type="button"
+            variant="outlined"
+          >
+            <ArrowUpward fontSize="small" />
+          </Button>
+          <Button
+            disabled={ribbon.order === ribbons.length - 1}
+            fullWidth
+            onClick={onSortDown}
+            size="small"
+            sx={{ maxWidth: '30px', minWidth: '30px', padding: 0 }}
+            type="button"
+            variant="outlined"
+          >
+            <ArrowDownward fontSize="small" />
           </Button>
         </ButtonGroup>
       </FlexColumn>

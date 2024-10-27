@@ -1,1 +1,0 @@
-import{g as s}from"../../assets/storage-PRplezpe.js";const n=async()=>{try{const t=(await s()).reduce((o,{isTied:r})=>o+(r?1:0),0),e=t===0?"":t.toString();chrome.action.setBadgeText({text:e})}catch{}};chrome.runtime.onStartup.addListener(function(){n()});chrome.storage.onChanged.addListener(async()=>{n()});
