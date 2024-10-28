@@ -19,7 +19,6 @@
     }
   },
   "description": "Ribbon Reminder - Stay on top of every task, right from your toolbar.",
-  "host_permissions": ["*://*/*"],
   "icons": {
     "16": "./favicons/favicon-16x16.png",
     "32": "./favicons/favicon-32x32.png",
