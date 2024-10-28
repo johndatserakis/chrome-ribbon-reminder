@@ -3,12 +3,13 @@
 ## Links
 
 - [Live in the Chrome Web Store](https://chromewebstore.google.com/detail/ribbon-reminder/ahdegcekcodbkojmccabgmfcfddabnbd)
+- [GitHub](https://github.com/johndatserakis/chrome-ribbon-reminder)
 
 ## About
 
 Stay on top of every task, right from your toolbar. Ribbon Reminder’s badge counter lets you add, edit, and delete tasks instantly. Simply tie or untie tasks to update your count - because everyone could use a little backup. It's like tying a ribbon on your finger.
 
-Ribbon Reminder started as an iOS app I built in Swift, and I think its concept could be perfect for an extension. I’ve open-sourced the project so others can explore and learn from it!
+Ribbon Reminder started as an iOS app I built in Swift, and I think its concept would be perfect for an extension. I’ve open-sourced the project so others can explore and learn from it!
 
 ## Develop
 

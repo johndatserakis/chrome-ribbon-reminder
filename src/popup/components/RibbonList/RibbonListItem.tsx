@@ -121,6 +121,8 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
   const areSaveButtonsDisabled =
     !titleLiveValue || titleLiveValue === ribbon.title;
 
+  console.log('ribbons', ribbons);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FlexColumn gap={4}>
@@ -136,7 +138,7 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
           <Button
             color={ribbon.isTied ? 'primary' : 'primary'}
             onClick={onTieToggle}
-            startIcon={ribbon.isTied ? <>🎗️</> : null}
+            startIcon={ribbon.isTied ? <>🎀</> : null}
             type="button"
             variant={ribbon.isTied ? 'contained' : 'outlined'}
           >
@@ -185,7 +187,7 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
           >
             Delete
           </Button>
-          {ribbon.order !== 0 && (
+          {ribbons.length > 1 && ribbon.order !== 0 && (
             <Button
               fullWidth
               onClick={() => onSortClick('up')}
@@ -198,7 +200,7 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
               <ArrowUpward fontSize="small" />
             </Button>
           )}
-          {ribbon.order !== ribbons.length - 1 && (
+          {ribbons.length > 1 && ribbon.order !== ribbons.length - 1 && (
             <Button
               fullWidth
               onClick={() => onSortClick('down')}

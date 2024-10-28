@@ -25,6 +25,12 @@ const sections = [
     linkText: 'Ribbon Reminder',
   },
   {
+    icon: '💻',
+    text: 'Interested in developing a browser extension? Ribbon Reminder is open source! Check it out on GitHub.',
+    link: 'https://github.com/johndatserakis/chrome-ribbon-reminder',
+    linkText: 'on GitHub',
+  },
+  {
     icon: '🔗',
     text: 'Tired of trying to tell the difference between blue and dark-purple links at 2 a.m? Check out another extension of mine, Link Control.',
     link: 'https://chromewebstore.google.com/detail/link-control/dibehcgiapedhoehgpinmkdmahlheekc',
