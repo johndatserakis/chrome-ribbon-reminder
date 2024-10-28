@@ -191,6 +191,7 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
               onClick={() => onSortClick('up')}
               size="small"
               sx={{ maxWidth: '30px', minWidth: '30px', padding: 0 }}
+              title="Move up."
               type="button"
               variant="outlined"
             >
@@ -203,6 +204,7 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
               onClick={() => onSortClick('down')}
               size="small"
               sx={{ maxWidth: '30px', minWidth: '30px', padding: 0 }}
+              title="Move down."
               type="button"
               variant="outlined"
             >
