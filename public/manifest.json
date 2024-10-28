@@ -28,6 +28,6 @@
   },
   "manifest_version": 3,
   "name": "Ribbon Reminder",
-  "permissions": ["activeTab", "scripting", "storage", "tabs"],
+  "permissions": ["storage"],
   "version": "2.0.0"
 }

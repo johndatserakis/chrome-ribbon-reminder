@@ -17,31 +17,30 @@ import { FlexColumn, FlexRow } from '../Display';
 
 import { RibbonFormData } from './RibbonList';
 
+type Direction = 'up' | 'down';
+
 const moveItemInOrder = (
   items: Ribbons,
   id: string,
-  direction: 'up' | 'down',
+  direction: Direction,
 ): Ribbons => {
-  // Clone and sort items by current order to avoid side effects
   const sortedItems = [...items].sort((a, b) => a.order - b.order);
-
-  // Find the current index of the item to move
   const currentIndex = sortedItems.findIndex((item) => item.id === id);
-  if (currentIndex === -1) return items; // Return original array if item is not found
 
-  // Calculate the new index based on the direction
+  if (currentIndex === -1) {
+    return items;
+  }
+
   const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
 
-  // Ensure the new index is within array bounds
-  if (newIndex < 0 || newIndex >= sortedItems.length) return items;
+  if (newIndex < 0 || newIndex >= sortedItems.length) {
+    return items;
+  }
 
-  // Swap items in the sorted array
-  [sortedItems[currentIndex], sortedItems[newIndex]] = [
-    sortedItems[newIndex],
-    sortedItems[currentIndex],
-  ];
+  const itemToMove = sortedItems[currentIndex];
+  sortedItems[currentIndex] = sortedItems[newIndex];
+  sortedItems[newIndex] = itemToMove;
 
-  // Reassign order properties to ensure they are sequential
   return sortedItems.map((item, index) => ({ ...item, order: index }));
 };
 
@@ -108,20 +107,9 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
     }
   };
 
-  const onSortUp = async () => {
+  const onSortClick = async (direction: Direction) => {
     try {
-      const updatedRibbons = moveItemInOrder(ribbons, ribbon.id, 'up');
-
-      await chrome.storage.sync.set({ [STORAGE_KEY_RIBBONS]: updatedRibbons });
-      setRibbons(updatedRibbons);
-    } catch (error) {
-      console.error('error', error);
-    }
-  };
-
-  const onSortDown = async () => {
-    try {
-      const updatedRibbons = moveItemInOrder(ribbons, ribbon.id, 'down');
+      const updatedRibbons = moveItemInOrder(ribbons, ribbon.id, direction);
 
       await chrome.storage.sync.set({ [STORAGE_KEY_RIBBONS]: updatedRibbons });
       setRibbons(updatedRibbons);
@@ -197,28 +185,30 @@ export const RibbonListItem = ({ ribbon, setRibbons, ribbons }: Props) => {
           >
             Delete
           </Button>
-          <Button
-            disabled={ribbon.order === 0}
-            fullWidth
-            onClick={onSortUp}
-            size="small"
-            sx={{ maxWidth: '30px', minWidth: '30px', padding: 0 }}
-            type="button"
-            variant="outlined"
-          >
-            <ArrowUpward fontSize="small" />
-          </Button>
-          <Button
-            disabled={ribbon.order === ribbons.length - 1}
-            fullWidth
-            onClick={onSortDown}
-            size="small"
-            sx={{ maxWidth: '30px', minWidth: '30px', padding: 0 }}
-            type="button"
-            variant="outlined"
-          >
-            <ArrowDownward fontSize="small" />
-          </Button>
+          {ribbon.order !== 0 && (
+            <Button
+              fullWidth
+              onClick={() => onSortClick('up')}
+              size="small"
+              sx={{ maxWidth: '30px', minWidth: '30px', padding: 0 }}
+              type="button"
+              variant="outlined"
+            >
+              <ArrowUpward fontSize="small" />
+            </Button>
+          )}
+          {ribbon.order !== ribbons.length - 1 && (
+            <Button
+              fullWidth
+              onClick={() => onSortClick('down')}
+              size="small"
+              sx={{ maxWidth: '30px', minWidth: '30px', padding: 0 }}
+              type="button"
+              variant="outlined"
+            >
+              <ArrowDownward fontSize="small" />
+            </Button>
+          )}
         </ButtonGroup>
       </FlexColumn>
     </form>

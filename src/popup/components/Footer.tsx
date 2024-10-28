@@ -66,7 +66,7 @@ export const Footer = () => (
   <ContentContainer>
     <Card variant="outlined">
       <CardContent>
-        <FlexColumn gap={2}>
+        <FlexColumn gap={1}>
           <SectionLabel>Additional Links</SectionLabel>
           <List>
             {sections.map(({ icon, text, link, linkText }, index) => {

@@ -30,6 +30,18 @@ Inspect Chrome storage sync
 chrome.storage.sync.get(console.log);
 ```
 
+To clear the Chrome sync storage, run this in the popup.
+
+```ts
+chrome.storage.local.clear(function () {
+  const error = chrome.runtime.lastError;
+  if (error) {
+    console.error(error);
+  }
+});
+chrome.storage.sync.clear();
+```
+
 ## Build
 
 ```bash

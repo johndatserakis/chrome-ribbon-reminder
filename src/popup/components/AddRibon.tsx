@@ -50,7 +50,7 @@ export const AddRibbon = ({ setRibbons, ribbons }: Props) => {
         createdAt: now,
         id: uuidv4(),
         isTied: false,
-        order: ribbons.length - 1 + 1,
+        order: ribbons.length - 1 + 1, // Ordering is 0 based.
         title: data.title,
         updatedAt: now,
       };
